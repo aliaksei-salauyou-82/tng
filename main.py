@@ -1,9 +1,9 @@
-from PyQt5 import QtWidgets, uic
+from PyQt5 import QtWidgets, uic, QtGui
 from PyQt5.QtSerialPort import QSerialPort, QSerialPortInfo
 from PyQt5.QtCore import QIODevice
-from pyqtgraph import PlotWidget
-import pyqtgraph as pg
-import sys
+# from pyqtgraph import PlotWidget
+# import pyqtgraph as pg
+# import sys
 
 app = QtWidgets.QApplication([])
 ui = uic.loadUi("main.ui")
@@ -17,6 +17,7 @@ def update_list():
         port_list.append(port.portName())
     ui.comList.clear()
     ui.comList.addItems(port_list)
+
 
 
 def open_com():
@@ -37,7 +38,7 @@ def close_com():
 
 listX1 = []
 listX2 = []
-for x in range(99):
+for x in range(100):
     listX1.append(float(x))
     listX2.append(float(x))
 
@@ -77,14 +78,23 @@ def com_ready_read():
     ui.pulseGraph.plot(listX2, listY2)
 
 
+def thres_changed():
+    ui.thresHold.display(ui.thresSlider.value())
+    # ui.imgTempOk.setPixmap(QtGui.QPixmap("img/greencircle.jpg"))
+    # ui.imgTempOk.clear()
+
+
 serial = QSerialPort()
 serial.setBaudRate(115200)
-# ui.comList.highlighted.connect(update_list)
 update_list()
 
 ui.openCom.clicked.connect(open_com)
 ui.closeCom.clicked.connect(close_com)
 ui.refrCom.clicked.connect(update_list)
+
+ui.thresHold.display(ui.thresSlider.value())
+
+ui.thresSlider.valueChanged.connect(thres_changed)
 
 serial.readyRead.connect(com_ready_read)
 
